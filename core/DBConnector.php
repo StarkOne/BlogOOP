@@ -5,8 +5,7 @@ namespace core;
 class DBConnector
 {
 
-  private static
-      $instance = null;
+  private static $instance = null;
   /**
    * @return Singleton
    */
@@ -14,14 +13,14 @@ class DBConnector
   {
       if (null === self::$instance)
       {
-          self::$instance = new self();
+          self::$instance = self::getPDO();
       }
       return self::$instance;
   }
   private function __construct() {
   }
   
-	public static function getPDO()
+	private static function getPDO()
 	{
 		$dsn = sprintf('%s:host=%s;dbname=%s', 'mysql', 'localhost', 'php3');
 		return new \PDO($dsn, 'root', '');

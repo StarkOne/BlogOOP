@@ -15,7 +15,7 @@ class LoginController extends BaseController
 			exit();
 		}
 		if (count($_POST) > 0) {
-			$db = DBConnector::getPDO();
+			$db = DBConnector::getInstance();
 			$logMod = new LoginModel($db);
 			$res = $logMod->checkAdmin();
 			if ($_POST['login'] === $res['login'] && $_POST['password'] === $res['password']) {

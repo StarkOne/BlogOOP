@@ -1,6 +1,7 @@
 <?php
 session_start();
 use core\DBConnector;
+use core\Request;
 use models\UserModel;
 use models\PostModel;
 
@@ -35,30 +36,34 @@ switch ($controller) {
 		die('Error 404');
 		break;
 }
-
-$action = isset($uriParts[1]) && $uriParts[1] !== '' && is_string($uriParts[1]) ? $uriParts[1] : 'index';
-if(count($uriParts) === 2 && $controller == 'Post' && $uriParts[1] !== '') {
-	$action = 'post';
-}
-$action = sprintf('%sAction', $action);
-//var_dump($action);
-$id = '';
-if(isset($uriParts[2]) && is_int(intval($uriParts[2]))) {
-	$id = $uriParts[2];
-} elseif(isset($uriParts[1]) && is_int(intval($uriParts[1]))) {
+$id = false;
+if(is_numeric($uriParts[1])){
 	$id = $uriParts[1];
-}
-// echo "<br>";
-// var_dump($uriParts);
-// echo "<br>";
-// var_dump($id);
+	$uriParts[1] = 'one';
+} 
+$action = isset($uriParts[1]) && $uriParts[1] !== '' && is_string($uriParts[1]) ? $uriParts[1] : 'index';
+$action = sprintf('%sAction', $action);
 
+
+if(!$id) {
+	if(isset($uriParts[2]) && is_numeric($uriParts[2])) {
+		$id = $uriParts[2];
+	} else {
+		$id = false;
+	}
+}
+
+if($id) {
+	$_GET['id'] = $id;
+}
+$request = new Request($_GET, $_POST, $_SERVER, $_COOKIE, $_FILES, $_SESSION);
 
 $controller = sprintf('controller\%sController', $controller);
-$controller = new $controller();
-if($id !== '') {
-	$controller->$action($id);
-} else {
-	$controller->$action();
-}
+$controller = new $controller($request);
+// if($id !== '') {
+// 	$controller->$action($id);
+// } else {
+// 	$controller->$action();
+// }
+$controller->$action();
 $controller->render();

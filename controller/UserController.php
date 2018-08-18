@@ -9,7 +9,7 @@ class UserController extends BaseController
 	public function indexAction()
 	{
 		$this->title = "Авторизация";
-		$db = DBConnector::getPDO();
+		$db = DBConnector::getInstance();
 		$mUser = new UserModel();
 		$users = $mUser->getAll();
 

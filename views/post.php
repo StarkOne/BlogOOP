@@ -1,4 +1,3 @@
-<?php  ?>
 <div class="container">
 	<div class="row">
 		<a href="/">Главная</a>

@@ -10,7 +10,7 @@ class PostController extends BaseController
 	{
 		$mLog = $this->isAuth();
 		$this->title = "Список статей";
-		$db = DBConnector::getPDO();
+		$db = DBConnector::getInstance();
 		$mPost = new PostModel($db);
 		$posts = $mPost->getAll();
 
@@ -25,7 +25,7 @@ class PostController extends BaseController
 	{
 		$this->title = "Статья";
 		$mLog = $this->isAuth();
-		$db = DBConnector::getPDO();
+		$db = DBConnector::getInstance();
 		$mPost = new PostModel($db);
 		$post = $mPost->getById($id);
 		$this->content = $this->build(__DIR__ . '/../views/post.php',
@@ -36,16 +36,32 @@ class PostController extends BaseController
 		);
 	}
 
-	public function editAction($id)
+	public function oneAction()
+	{
+		$this->title = "Статья";
+		$id = $this->request->gets('id');
+		$mLog = $this->isAuth();
+		$db = DBConnector::getInstance();
+		$mPost = new PostModel($db);
+		$post = $mPost->getById($id);
+		$this->content = $this->build(__DIR__ . '/../views/post.php',
+		[
+			'post' => $post,
+			'mLog' => $mLog
+		]
+		);
+	}
+
+	public function editAction()
 	{
 		$mLog = $this->isAuth();
-		
+		$id = $this->request->gets('id');
 		$this->title = "Редактировать";
 		$mess = '';
 			if (!isset($id)) {
 				$mess = "404, такой статьи нет";
 			}
-			$db = DBConnector::getPDO();
+			$db = DBConnector::getInstance();
 			$mPost = new PostModel($db);
 			$post = $mPost->getById($id);
 			if($post == null) {
@@ -53,7 +69,7 @@ class PostController extends BaseController
 				$msg = false;
 			}
 			if($mLog) {
-				if (count($_POST) > 0) {
+				if ($this->request->isPost()) {
 					$title = trim($_POST['title']);
 					$content = trim($_POST['content']);
 					if($title == '' || $content == '') {
@@ -85,7 +101,7 @@ class PostController extends BaseController
 			if (count($_POST) > 0) {
 				$title = trim($_POST['title']);
 				$text = trim($_POST['text']);
-				$db = DBConnector::getPDO();
+				$db = DBConnector::getInstance();
 				$mPost = new PostModel($db);
 				$this->title = "Добавление статьи";
 				if($title == '' || $text == '') {

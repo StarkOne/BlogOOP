@@ -3,15 +3,18 @@
 namespace controller;
 use models\LoginModel;
 use core\DBConnector;
+use core\Request;
 
 class BaseController
 {
 	protected $title;
 	protected $content;
 	protected $is_auth;
+	protected $request = '123';
 
-	public function __construst()
+	public function __construct($request)
 	{
+		$this->request = $request;
 		$this->title = 'Статьи';
 		$this->content = '';
 		$this->is_auth = false;
@@ -19,7 +22,7 @@ class BaseController
 
 	protected function isAuth()
 	{
-		$db = DBConnector::getPDO();
+		$db = DBConnector::getInstance();
 		$log = new LoginModel($db);
 		$rez = $log->checkAdmin();
 		if($_SESSION['is_auth'] !== '' && isset($_SESSION['is_auth'])) {
