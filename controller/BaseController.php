@@ -3,6 +3,7 @@
 namespace controller;
 use models\LoginModel;
 use core\DBConnector;
+use core\DBDriver;
 use core\Request;
 
 class BaseController
@@ -23,6 +24,7 @@ class BaseController
 	protected function isAuth()
 	{
 		$db = DBConnector::getInstance();
+		$db = new DBDriver($db);
 		$log = new LoginModel($db);
 		$rez = $log->checkAdmin();
 		if($_SESSION['is_auth'] !== '' && isset($_SESSION['is_auth'])) {
@@ -35,6 +37,11 @@ class BaseController
 		return $this->is_auth;
 	}
 
+	public function redirect($url)
+	{
+		header("location: $url");
+		exit();
+	}
 	public function render()
 	{
 		echo $this->build(

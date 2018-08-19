@@ -24,22 +24,21 @@ class Request
 
 	public function gets($key = null)
 	{
-		if(!$key) {
-			return $this->get;
-		}
-		if(isset($this->get[$key])) {
-			return $this->get[$key];
-		}
-		return null;
+		return $this->getArr($this->get, $key);
 	}
 
 	public function post($key = null)
 	{
+		return $this->getArr($this->post, $key);
+	}
+
+	private function getArr(array $arr, $key = null)
+	{
 		if(!$key) {
-			return $this->get;
+			return $arr;
 		}
-		if(isset($this->get[$key])) {
-			return $this->get[$key];
+		if(isset($arr[$key])) {
+			return $arr[$key];
 		}
 		return null;
 	}

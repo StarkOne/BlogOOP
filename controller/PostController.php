@@ -3,6 +3,7 @@
 namespace controller;
 use models\PostModel;
 use core\DBConnector;
+use core\DBDriver;
 
 class PostController extends BaseController
 {
@@ -11,6 +12,7 @@ class PostController extends BaseController
 		$mLog = $this->isAuth();
 		$this->title = "Список статей";
 		$db = DBConnector::getInstance();
+		$db = new DBDriver($db);
 		$mPost = new PostModel($db);
 		$posts = $mPost->getAll();
 
@@ -26,6 +28,7 @@ class PostController extends BaseController
 		$this->title = "Статья";
 		$mLog = $this->isAuth();
 		$db = DBConnector::getInstance();
+		$db = new DBDriver($db);
 		$mPost = new PostModel($db);
 		$post = $mPost->getById($id);
 		$this->content = $this->build(__DIR__ . '/../views/post.php',
@@ -42,6 +45,7 @@ class PostController extends BaseController
 		$id = $this->request->gets('id');
 		$mLog = $this->isAuth();
 		$db = DBConnector::getInstance();
+		$db = new DBDriver($db);
 		$mPost = new PostModel($db);
 		$post = $mPost->getById($id);
 		$this->content = $this->build(__DIR__ . '/../views/post.php',
@@ -62,6 +66,7 @@ class PostController extends BaseController
 				$mess = "404, такой статьи нет";
 			}
 			$db = DBConnector::getInstance();
+			$db = new DBDriver($db);
 			$mPost = new PostModel($db);
 			$post = $mPost->getById($id);
 			if($post == null) {
@@ -102,15 +107,18 @@ class PostController extends BaseController
 				$title = trim($_POST['title']);
 				$text = trim($_POST['text']);
 				$db = DBConnector::getInstance();
+				$db = new DBDriver($db);
 				$mPost = new PostModel($db);
 				$this->title = "Добавление статьи";
 				if($title == '' || $text == '') {
-				$msg = 'Заполните все поля!';
-				var_dump('123');
+					$msg = 'Заполните все поля!';
 				} else {
-						$query1 = $mPost->addMessage($title, $text);
-						header("Location: /post/$query1");
-					exit();
+					//$query1 = $mPost->addMessage($title, $text);
+					$query1 = $mPost->addMessage( [
+						'title' => $title,
+						'text' => $text
+					]);
+					$this->redirect("/post/$query1");
 				}
 			} else {
 				$name = '';

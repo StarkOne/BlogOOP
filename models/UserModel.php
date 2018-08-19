@@ -1,11 +1,11 @@
 <?php
 
 namespace models;
-
+use core\DBDriver;
 class UserModel extends BaseModel
 {
 	protected $idTable = 'id_users';
-	public function __construct(\PDO $db)
+	public function __construct(DBDriver $db)
 	{
 		parent::__construct($db, 'users');
 	}

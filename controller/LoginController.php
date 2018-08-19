@@ -3,6 +3,7 @@
 namespace controller;
 use models\LoginModel;
 use core\DBConnector;
+use core\DBDriver;
 
 class LoginController extends BaseController
 {
@@ -16,6 +17,7 @@ class LoginController extends BaseController
 		}
 		if (count($_POST) > 0) {
 			$db = DBConnector::getInstance();
+			$db = new DBDriver($db);
 			$logMod = new LoginModel($db);
 			$res = $logMod->checkAdmin();
 			if ($_POST['login'] === $res['login'] && $_POST['password'] === $res['password']) {

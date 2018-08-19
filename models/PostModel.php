@@ -1,28 +1,13 @@
 <?php
 
 namespace models;
-
+use core\DBDriver;
 class PostModel extends BaseModel
 {
 	protected $idTable = 'id';
-	public function __construct(\PDO $db)
+	public function __construct(DBDriver $db)
 	{
 		parent::__construct($db, 'posts');
-	}
-
-	public function addMessage($name, $text)
-	{
-		$sql = "INSERT INTO $this->table (title, text) VALUES (:n, :t)";
-		$query = $this->db->prepare($sql);
-		$query->execute(
-			[
-				'n' => $name,
-				't' => $text
-			]
-		);
-		$this->cheakError($query);
-		$res = $this->db->lastInsertId();
-		return $res;
 	}
 	public function updateMessage($title, $content, $id)
 	{
